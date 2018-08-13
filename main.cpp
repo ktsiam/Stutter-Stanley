@@ -6,6 +6,7 @@ int main()
         
         phi["+"]   = new Primitive(Fun::PLUS);
         phi["-"]   = new Primitive(Fun::MINUS);
+        phi["if"]  = new Primitive(Fun::IF);
         
         std::string line;
         while(std::getline(std::cin, line, ';')) {

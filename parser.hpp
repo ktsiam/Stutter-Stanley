@@ -8,7 +8,7 @@
 Val mk_num(const std::string &s)
 {        
         char *bad;
-        Val v = std::strtol(s.c_str(), &bad, 10);
+        Val v = static_cast<Val>(std::strtol(s.c_str(), &bad, 10));
         return *bad ? -1 : v;
 }
 struct Token {

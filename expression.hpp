@@ -28,20 +28,20 @@ struct Exp {
 struct Literal : Exp {
         Literal(Val v);
         Val value;
-        Val val_of(Env&, Env&, FunEnv&);
+        Val val_of(Env &rho, Env &ksi, FunEnv &phi);
 };
 
 struct Variable : Exp {
         Variable(Name n);
         Name name;
-        Val val_of(Env &rho, Env &ksi, FunEnv&);
+        Val val_of(Env &rho, Env &ksi, FunEnv &phi);
 };
 
 struct FunctionApp : Exp {
         FunctionApp(Name n, std::vector<Exp*> _args);
         Name name;
         std::vector<Exp*> args;
-        Val val_of(Env&, Env&, FunEnv &phi);
+        Val val_of(Env &rho, Env &ksi, FunEnv &phi);
 };
 
 /* not strictly an expression */
@@ -55,21 +55,21 @@ struct VarDef : Exp {
 
 /* GLOBAL SCOPE (defs) */
 struct Fun {
-        virtual Val apply(std::vector<Val> args, Env &ksi, FunEnv &phi) = 0;
-        enum Prim_type { PLUS, MINUS };
+        virtual Val apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi) = 0;
+        enum Prim_type { PLUS, MINUS, IF };
 };
 
 struct Primitive : Fun {
         Primitive(Fun::Prim_type _type);
         Fun::Prim_type prim_type;
-        Val apply(std::vector<Val> args, Env &ksi, FunEnv &phi);
+        Val apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi);
 };
 
-struct DefinedFun : Fun {
+struct DefinedFun : Fun {        
         std::vector<Name> arg_names;
         Env rho; // captured vars
         Exp *body;
-        Val apply(std::vector<Val> args, Env &ksi, FunEnv &phi);
+        Val apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi);
 };
 
 
