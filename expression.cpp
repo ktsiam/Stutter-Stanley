@@ -26,6 +26,15 @@ Val VarDef::val_of(Env &rho, Env &ksi, FunEnv &phi)
         return ksi[name] = exp -> val_of(rho, ksi, phi);
 }
 
+FunDef::FunDef(Name n, std::vector<Name> _arg_names, Exp *_body) :
+        funName(n), arg_names(_arg_names), body(_body) {}
+
+Val FunDef::val_of(Env &, Env &, FunEnv &phi)
+{
+        phi[funName] = new DefinedFun(arg_names, body);
+        return 0;
+}
+
 // FUNCTIONS
 Primitive::Primitive(Fun::Prim_type _type) : prim_type(_type) {}
 Val Primitive::apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi)
@@ -44,6 +53,10 @@ Val Primitive::apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi)
         }
 }
 
+DefinedFun::DefinedFun(std::vector<Name> _arg_names, Exp *_body) :
+        arg_names(_arg_names), body(_body) {}
+
+#include <iostream>
 Val DefinedFun::apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi)
 {
         assert(args.size() == arg_names.size());

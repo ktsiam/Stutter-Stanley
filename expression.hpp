@@ -52,6 +52,13 @@ struct VarDef : Exp {
         Val val_of(Env &rho, Env &ksi, FunEnv &phi);
 };
 
+struct FunDef : Exp {
+        FunDef(Name n, std::vector<Name> _arg_names, Exp *_body);
+        Name funName;
+        std::vector<Name> arg_names;
+        Exp *body;
+        Val val_of(Env &rho, Env &ksi, FunEnv &phi);
+};
 
 /* GLOBAL SCOPE (defs) */
 struct Fun {
@@ -65,9 +72,10 @@ struct Primitive : Fun {
         Val apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi);
 };
 
-struct DefinedFun : Fun {        
+struct DefinedFun : Fun {
+        DefinedFun(std::vector<Name> _arg_names, Exp *_body);
         std::vector<Name> arg_names;
-        Env rho; // captured vars
+        //Env rho; // captured vars -- weak bindings
         Exp *body;
         Val apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi);
 };

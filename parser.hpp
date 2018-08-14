@@ -24,12 +24,6 @@ struct FunAppTok : Token {
         std::vector<Token*> args;
 };
 
-struct FunDefTok : Token {
-        std::vector<std::string> arg_names;
-        
-        
-};
-
 /* Converts string to Val if possible (else -1)*/
 Val str_to_val(const std::string &s);
 std::istringstream preprocess(std::string inp); // adds extra spaces

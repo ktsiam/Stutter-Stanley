@@ -17,8 +17,30 @@ FunAppTok::FunAppTok(std::string _head, std::vector<Token*> _args) :
 
 Exp *FunAppTok::make_exp()
 {
-        if (head == "val")
+        if (head == "val") {
+                assert(args.size() == 2);
                 return new VarDef(args[0] -> head, args[1] -> make_exp());
+        }
+        if (head == "def") {
+                assert(args.size() == 3);
+
+                // name
+                Name funName = args[0] -> head;
+
+                // argument names
+                FunAppTok *funDef = dynamic_cast<FunAppTok*>(args[1]);
+                assert(funDef && "invalid argument list");
+                
+                std::vector<Name> arg_names = { funDef -> head };
+                for (Token *arg : funDef -> args)
+                        arg_names.push_back(arg -> head);
+
+                // body
+                Exp *body = args[2] -> make_exp();
+                
+                return new FunDef(funName, arg_names, body);
+        }
+        
         std::vector<Exp*> params;
         for (Token *arg : args) 
                 params.push_back(arg -> make_exp());
