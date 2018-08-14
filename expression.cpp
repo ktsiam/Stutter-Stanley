@@ -59,7 +59,7 @@ DefinedFun::DefinedFun(std::vector<Name> _arg_names, Exp *_body) :
 #include <iostream>
 Val DefinedFun::apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi)
 {
-        assert(args.size() == arg_names.size());
+        assert(args.size() >= arg_names.size());
 
         Env new_rho;
         for (std::size_t i = 0; i < arg_names.size(); ++i)

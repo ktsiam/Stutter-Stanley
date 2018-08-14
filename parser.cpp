@@ -30,13 +30,18 @@ Exp *FunAppTok::make_exp()
                 // argument names
                 FunAppTok *funDef = dynamic_cast<FunAppTok*>(args[1]);
                 assert(funDef && "invalid argument list");
+
+                // body
+                Exp *body = args[2] -> make_exp();
+
+                if (funDef -> head == "void")
+                        return new FunDef(funName, {}, body);
                 
                 std::vector<Name> arg_names = { funDef -> head };
                 for (Token *arg : funDef -> args)
                         arg_names.push_back(arg -> head);
 
-                // body
-                Exp *body = args[2] -> make_exp();
+                
                 
                 return new FunDef(funName, arg_names, body);
         }
