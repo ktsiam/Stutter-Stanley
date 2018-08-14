@@ -4,15 +4,17 @@ int main()
         Env ksi, rho;
         FunEnv phi;
         
-        phi["+"]   = new Primitive(Fun::PLUS);
-        phi["-"]   = new Primitive(Fun::MINUS);
-        phi["if"]  = new Primitive(Fun::IF);
+        phi["+"]  = new Primitive(Fun::PLUS);
+        phi["-"]  = new Primitive(Fun::MINUS);
+        phi["if"] = new Primitive(Fun::IF);
         
         std::string line;
+        std::cout << ">> ";
         while(std::getline(std::cin, line, ';')) {
-                parse(preprocess(line)) -> print();
-                std::cout << " = " <<  parse(preprocess(line)) ->
-                        make_exp() -> val_of(rho, ksi, phi);
-                std::cout << std::endl;
+                std::cout << 
+                        parse(preprocess(line))
+                            -> make_exp()
+                            -> val_of(rho, ksi, phi)
+                          << "\n>> ";
         }
 }
