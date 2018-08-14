@@ -1,0 +1,6 @@
+(def not (x) (if x 0 1));
+(def and (x y) (if x y 0));
+(def or  (x y) (if x 1 y));
+(def =   (x y) (not (- x y)));
+(def *   (x y) (if (= x 0) 0 (+ y (* (- x 1) y))));
+(def fac (x)   (if x (* x (fac (- x 1))) 1)));
