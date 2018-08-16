@@ -17,8 +17,8 @@ struct UnitTok : Token {
         Exp *make_exp();
 };
 
-struct FunAppTok : Token {
-        FunAppTok(std::string _head, std::vector<Token*> _args);
+struct MultiTok : Token {
+        MultiTok(std::string _head, std::vector<Token*> _args);
         Exp *make_exp();
         
         std::vector<Token*> args;

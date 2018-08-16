@@ -12,10 +12,10 @@ Exp *UnitTok::make_exp()
         return new Variable(head);
 }
 
-FunAppTok::FunAppTok(std::string _head, std::vector<Token*> _args) :
+MultiTok::MultiTok(std::string _head, std::vector<Token*> _args) :
         Token(_head), args(_args) {}
 
-Exp *FunAppTok::make_exp()
+Exp *MultiTok::make_exp()
 {
         if (head == "val") {
                 assert(args.size() == 2);
@@ -28,7 +28,7 @@ Exp *FunAppTok::make_exp()
                 Name funName = args[0] -> head;
 
                 // argument names
-                FunAppTok *funDef = dynamic_cast<FunAppTok*>(args[1]);
+                MultiTok *funDef = dynamic_cast<MultiTok*>(args[1]);
                 assert(funDef && "invalid argument list");
 
                 // body
@@ -92,7 +92,7 @@ Token *parse_composite(std::istream &is)
         std::vector<Token*> args;
         while (is >> tok) {
                 if (tok == ")") // exit condition
-                        return new FunAppTok(head, args);
+                        return new MultiTok(head, args);
 
                 if (tok == "(") // recurse
                         args.push_back(parse_composite(is));
