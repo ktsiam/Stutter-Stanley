@@ -63,7 +63,7 @@ struct FunDef : Exp {
 /* GLOBAL SCOPE (defs) */
 struct Fun {
         virtual Val apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi) = 0;
-        enum Prim_type { PLUS, MINUS, IF };
+        enum Prim_type { PLUS, MINUS, IF, BEGIN };
 };
 
 struct Primitive : Fun {

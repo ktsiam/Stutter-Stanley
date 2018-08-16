@@ -50,6 +50,10 @@ Val Primitive::apply(std::vector<Exp*> args, Env &rho, Env &ksi, FunEnv &phi)
                         return (args[0] -> val_of(rho, ksi, phi)) ?
                                 args[1] -> val_of(rho, ksi, phi) :
                                 args[2] -> val_of(rho, ksi, phi);
+                case BEGIN : Val v = 0;
+                        for (Exp *arg : args)
+                                v = arg -> val_of(rho, ksi, phi);
+                        return v;
         }
 }
 
