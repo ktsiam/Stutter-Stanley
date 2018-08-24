@@ -11,47 +11,50 @@ std::ostream &operator<<(std::ostream &os, const Type &type)
         return os;
 }
 
+/* Implementing Type children */
+using namespace Tp;
+
 /* PRIMITIVE */
 
-bool Prim_type::operator==(const Type &type) const
+bool Primitive::operator==(const Type &type) const
 {
         return type.compare(*this);
 }
 
-Type *Prim_type::binds(const std::vector<Type*> &) const
+Type *Primitive::binds(const std::vector<Type*> &) const
 {
         assert(false && "Not a function");
 }
 
-bool Prim_type::compare(const Prim_type &other) const
+bool Primitive::compare(const Primitive &other) const
 {
-        return other.prim_type == prim_type;
+        return other.tag == tag;
 }
-bool Prim_type::compare(const Fun_type &) const
-{
-        return false;
-}
-
-bool Prim_type::compare(const List_type &) const
+bool Primitive::compare(const Function &) const
 {
         return false;
 }
 
-void Prim_type::print(std::ostream &os) const
+bool Primitive::compare(const List &) const
+{
+        return false;
+}
+
+void Primitive::print(std::ostream &os) const
 {
         static const std::string printable_types[] = { "int", "bool", "symbol" };
-        os << printable_types[prim_type];
+        os << printable_types[tag];
 }
 
 /* FUNCTION */
 
-bool Fun_type::operator==(const Type &type) const
+bool Function::operator==(const Type &type) const
 {
         return type.compare(*this);
 }
 
 
-Type *Fun_type::binds(const std::vector<Type*> &_arg_types) const
+Type *Function::binds(const std::vector<Type*> &_arg_types) const
 {
         std::size_t size = arg_types.size();
         if (_arg_types.size() != size) return NULL;
@@ -62,23 +65,23 @@ Type *Fun_type::binds(const std::vector<Type*> &_arg_types) const
 }
 
 
-bool Fun_type::compare(const Prim_type &) const
+bool Function::compare(const Primitive &) const
 {
         return false;
 }
 
-bool Fun_type::compare(const Fun_type &other) const
+bool Function::compare(const Function &other) const
 {
         Type *ret = other.binds(arg_types);
         return (ret != NULL) && (*ret == ret_type);
 }
 
-bool Fun_type::compare(const List_type &) const
+bool Function::compare(const List &) const
 {
         return false;
 }
 
-void Fun_type::print(std::ostream &os) const
+void Function::print(std::ostream &os) const
 {
         std::string sep = "";
         os << "([";
@@ -92,44 +95,47 @@ void Fun_type::print(std::ostream &os) const
 /* LIST */
 
 /* redirecting copy ctor to ctor */
-List_type::List_type(const List_type &elem_tp) :
-        List_type(static_cast<const Type&> (elem_tp)) {}
+List::List(const List &elem_tp) :
+        List(static_cast<const Type&> (elem_tp)) {}
+        
 
-bool List_type::operator==(const Type &type) const
+bool List::operator==(const Type &type) const
 {
         return type.compare(*this);
 }
 
-Type *List_type::binds(const std::vector<Type*> &) const
+Type *List::binds(const std::vector<Type*> &) const
 {
         assert(false && "Not a function");
 }
 
-bool List_type::compare(const Prim_type &) const
+bool List::compare(const Primitive &) const
 {
         return false;
 }
-bool List_type::compare(const Fun_type  &) const
+bool List::compare(const Function  &) const
 {
         return false;
 }
-bool List_type::compare(const List_type &other) const
+bool List::compare(const List &other) const
 {
         return other.elem_type == elem_type;
 }
 
-void List_type::print(std::ostream &os) const
+void List::print(std::ostream &os) const
 {
         os << "(list " << elem_type << ')';
 }
 
 
+/* TESTING */
 #ifdef DEBUG
 int main()
 {
-        Prim_type a(Type::INT), b(Type::BOOL), c(Type::SYMBOL);
-        List_type la(a), lb(b), lla(la);
-        Fun_type af(a, {}), bfac(b, { &a, &c }), lblaa(lb, {&la, &a});
+        Tp::Primitive a(Tp::Primitive::INT), b(Tp::Primitive::BOOL),    \
+                      c(Tp::Primitive::SYMBOL);
+        Tp::List la(a), lb(b), lla(la);
+        Tp::Function af(a, {}), bfac(b, { &a, &c }), lblaa(lb, {&la, &a});
         
         std::cout << "Equality:\n" << std::boolalpha
                   << a << " == " << a << std::endl
