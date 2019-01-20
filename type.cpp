@@ -1,4 +1,4 @@
-#include "type2.hpp"
+#include "type.hpp"
 
 Type *operator^(Type &a, Type &b)
 {
@@ -153,6 +153,7 @@ void Forall::print(std::ostream &os, std::map<int, char> &bindings)
         os << c;
 }
 
+#define DEBUG
 #ifdef DEBUG
 int main()
 {
