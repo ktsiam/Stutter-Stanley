@@ -2,6 +2,7 @@
 #define PARSER_H_
 
 #include "expression.hpp"
+#include "value.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -24,8 +25,8 @@ struct MultiTok : Token {
         std::vector<Token*> args;
 };
 
-/* Converts string to Val if possible (else -1)*/
-Val str_to_val(const std::string &s);
+/* Converts string to Value if possible (else -1)*/
+int str_to_val(const std::string &s);
 std::istringstream preprocess(std::string inp); // adds extra spaces
 Token *parse_composite(std::istream &is); // parses recursively
 Token *parse(std::istringstream &&is);    // wrapper

@@ -1,0 +1,3 @@
+- add lambdas to parser
+
+- fix type system

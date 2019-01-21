@@ -6,9 +6,9 @@ UnitTok::UnitTok(std::string _head) : Token(_head) {}
 
 Exp *UnitTok::make_exp()
 {
-        Val val = str_to_val(head);
+        int val = str_to_val(head);
         if (val != -1)
-                return new Literal(val);
+                return new Literal(new Integer(val));
         return new Variable(head);
 }
 
@@ -50,7 +50,7 @@ Exp *MultiTok::make_exp()
         for (Token *arg : args) 
                 params.push_back(arg -> make_exp());
 
-        return new FunctionApp(head, params);
+        return new FunctionApp(new Variable(head), params);
 }
 
 
@@ -58,10 +58,10 @@ Exp *MultiTok::make_exp()
 /* PARSING FUNCTIONS */
 
 
-Val str_to_val(const std::string &s)
+int str_to_val(const std::string &s)
 {        
         char *bad;
-        Val v = static_cast<Val>(std::strtol(s.c_str(), &bad, 10));
+        int v = static_cast<int>(std::strtol(s.c_str(), &bad, 10));
         return *bad ? -1 : v;
 }
 

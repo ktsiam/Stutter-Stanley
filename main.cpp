@@ -2,20 +2,22 @@
 int main()
 {
         Env ksi, rho;
-        FunEnv phi;
         
-        phi["+"]     = new Primitive(Fun::PLUS);
-        phi["-"]     = new Primitive(Fun::MINUS);
-        phi["if"]    = new Primitive(Fun::IF);
-        phi["begin"] = new Primitive(Fun::BEGIN);
+        ksi["if"]   = new Fun::If;
+        ksi["-"]    = new Fun::Minus;
+        ksi["cons"] = new Fun::Cons;
+        ksi["car"]  = new Fun::Car;
+        ksi["cdr"]  = new Fun::Cdr;
+        ksi["nil?"] = new Fun::Is_nil;
+        ksi["nil"]  = new List({});
         
         std::string line;
         std::cout << ">> ";
         while(std::getline(std::cin, line, ';')) {
                 std::cout << 
-                        parse(preprocess(line))
+                        *parse(preprocess(line))
                             -> make_exp()
-                            -> val_of(rho, ksi, phi)
+                            -> val_of(rho, ksi)
                           << "\n>> ";
         }
 }
