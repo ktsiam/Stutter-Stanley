@@ -1,7 +1,7 @@
-- add lambdas to parser
-- make lists hold expressions
-- add print function to Exp
-- add lambda and val in parser
+- implement lambda capture
 - throw exception upon error and catch from main
 
-- fix type system
+- fix type system :
+   Type-system : disallow ('a ^ 'a list) and ('a ^ 'a -> 'a) binds
+   Expressions : add 'type_of()' method
+

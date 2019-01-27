@@ -1,8 +1,17 @@
-(val not (fun (x)   (if x 0 1)));
-(val +   (fun (x y) (- x (- 0 y))));
-(val and (fun (x y) (if x y 0)));
-(val or  (fun (x y) (if x 1 y)));
-(val =   (fun (x y) (not (- x y))));
-(val *   (fun (x y) (if (= x 0) 0 (+ y (* (- x 1) y)))));
-(val fac (fun (x)   (if x (* x (fac (- x 1))) 1))));
+(val not   (fun (x)   (if x 0 1)));
+(val +     (fun (x y) (- x (- 0 y))));
+(val and   (fun (x y) (if x y 0)));
+(val or    (fun (x y) (if x 1 y)));
+(val =     (fun (x y) (not (- x y))));
+(val *     (fun (x y) (if (= x 0) 0 (+ y (* (- x 1) y)))));
+(val fac   (fun (x)   (if x (* x (fac (- x 1))) 1))));
+(val o     (fun (f g) (fun (x) (f (g x)))));
+(val curry (fun (f)   (fun (x) (fun (y) (f x y)))));
+(val map   (val temp (fun (f xs)(if (nil? xs) nil (cons (f (car xs)) (temp f (cdr xs)))))));
+(val foldl
+     (val temp
+          (fun (f zero xs)
+               (if (nil? xs)
+               zero (f (car xs)
+               (temp f zero (cdr xs)))))));
 
