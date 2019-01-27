@@ -14,8 +14,10 @@ Value *Variable::val_of(Env &rho, Env &ksi)
 {
         if (rho.find(name) != rho.end()) return rho[name];
         if (ksi.find(name) != ksi.end()) return ksi[name];
-        std::cerr << "Variable " << name << " not found!\n";
-        assert(false && "Variable not found");
+        
+        std::ostringstream ss;
+        ss << "Variable " << name << " not found!";
+        throw std::runtime_error(ss.str());
 }
 
 FunctionApp::FunctionApp(Exp *_funExp, std::vector<Exp*> _args) :

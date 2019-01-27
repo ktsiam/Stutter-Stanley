@@ -5,6 +5,8 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <sstream>
+#include <exception>
 
 struct Value;
 typedef std::string Name;

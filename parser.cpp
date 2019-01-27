@@ -2,10 +2,10 @@
 #include <algorithm>
 #include <string>
 
-static bool valid_id(const std::string &s) {
-        if (s != "(" && s != ")" && s != "'" && s != "") return true;
-        std::cerr << "Invalid id of size: " << s.size() << '<' << s << ">\n";
-        assert(false);
+static void validate_id(const std::string &s) {
+        if (s != "(" && s != ")" && s != "'" && s != "") return;
+        
+        throw std::runtime_error((std::ostringstream() << "Syntax error : " << s) .str());
 }
 
 /* PREPROCESSOR ADDS SPACES BETWEEN PARENTHESES AND REMOVES COMMENTS */
@@ -42,8 +42,7 @@ Token *Token::parse(std::istream &is) {
         if (s == ")") return nullptr;        
         if (s == "'") return new Tok::ListTok(is);
         if (s != "(") return new Tok::Unit(std::move(s));
-        
-        assert(s == "(");
+
 
         /* Extracting first non-space character */
         is >> std::noskipws;
@@ -55,13 +54,14 @@ Token *Token::parse(std::istream &is) {
         is >> std::skipws;
 
         switch (c) {
-        case '\'' : case ')' : assert(false);
-        case '(' :
+        case '\'' : throw std::runtime_error("Cannot apply expression of list type!");
+        case ')'  : throw std::runtime_error("Empty application is invalid!");
+        case '('  :
                 return new Tok::Application(is); break;
         default:
                 is >> s;
-                if (s == "val") return new Tok::Definition(is);
-                if (s == "fun") return new Tok::Lambda(is);
+                if (s == "val" || s == "def")    return new Tok::Definition(is);
+                if (s == "fun" || s == "lambda") return new Tok::Lambda(is);
 
                 return new Tok::Application(std::move(s), is);
         }
@@ -70,21 +70,22 @@ Token *Token::parse(std::istream &is) {
 
 Tok::Unit::Unit(std::istream &is) {
         is >> id;
-        assert(is);
-        assert(valid_id(id));
+        validate_id(id);
 }
 
 
 Tok::Definition::Definition(std::istream &is) {
         is >> id;
-        assert(valid_id(id));
+        validate_id(id);
         
         val = Token::parse(is);
 
         // closing parenthesis
         char c;;
         is >> c;
-        assert(c == ')');
+        if (c != ')')
+                throw std::runtime_error("Definitions (`val`) must contain "
+                                         "only a name and an expression!");
 }
 
 Tok::Application::Application(std::string &&fst, std::istream &is) {
@@ -104,9 +105,12 @@ Tok::Application::Application(std::istream &is) {
 Tok::Lambda::Lambda(std::istream &is) {
         std::string id;
         is >> id;
-        assert(id == "(");
+        if (id != "(")
+                throw std::runtime_error("`fun` should be followed by an "
+                                         "argument list! -- (fun (a b ...) body)");
+
         while (is >> id && id != ")") {
-                assert(valid_id(id));
+                validate_id(id);
                 args.push_back(std::move(id));
         }
 
@@ -120,7 +124,9 @@ Tok::Lambda::Lambda(std::istream &is) {
 Tok::ListTok::ListTok(std::istream &is) {
         std::string s;
         is >> s;
-        assert(s == "(");
+        if (s != "(")
+                throw std::runtime_error("tick (`) must be followed by a parenthesized "
+                                         "list expression! -- '(a b ...)");
 
         Token *elem;
         while ((elem = Token::parse(is)))
@@ -140,7 +146,7 @@ Exp *Tok::Definition::make_exp() {
 
 Exp *Tok::Application::make_exp() {
 
-        assert(operands.size() > 0);
+        assert(operands.size() > 0 && "This should not happen!");
         Exp *funExp = operands[0] -> make_exp();
         
         std::vector<Exp*> args;

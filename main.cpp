@@ -11,19 +11,17 @@ int main()
         ksi["nil"]  = new List(std::vector<Exp*>());
 
         
-        
-        // FunctionApp app(new Variable("-"), { new Literal(new Integer(2)),
-        //                                      new Literal(new Integer(1)) });
-        //  std::cout << *app.val_of(rho, ksi) << std::endl;
-
-
-        
         std::string line;
         std::cout << ">> ";
         while(std::getline(std::cin, line, ';')) {
-                std::istringstream ready = Token::preprocess(line);
-                Token *tok = Token::parse(ready);
-                assert(tok);
-                std::cout << * tok -> make_exp() -> val_of(rho, ksi) << "\n>> ";
+                try {
+                        std::istringstream ready = Token::preprocess(line);
+                        Token *tok = Token::parse(ready);
+                        if (!tok) throw std::runtime_error("Mismatched parentheses");
+                        std::cout << * tok -> make_exp() -> val_of(rho, ksi) << "\n>> ";
+                } catch (const std::runtime_error &exc) {
+                        std::cerr << exc.what() << std::endl;
+                        std::cout << "\n>> ";
+                }
         }
 }
