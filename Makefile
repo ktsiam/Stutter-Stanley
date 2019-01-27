@@ -1,5 +1,5 @@
 CXX      = g++
-CXXFLAGS = -g -std=c++14 -Wall -Wextra -Wconversion #-Weverything
+CXXFLAGS = -g -std=c++14 -Wall -Wextra #-Wconversion #-Weverything
 
 stanley: expression.o value.o parser.o main.o 
 	${CXX}  -o stanley   expression.o value.o parser.o main.o

@@ -1,4 +1,5 @@
 #include "value.hpp"
+#include "expression.hpp"
 
 std::ostream &operator<<(std::ostream &os, const Value &v)
 {
@@ -12,7 +13,7 @@ Value *Value::apply_IF(Exp *, Exp *, Env &, Env &)          { assert(false); }
 Value *Value::apply_MINUS_1(Value *)                        { assert(false); }
 Value *Value::apply_MINUS_2(int)                            { assert(false); }
 Value *Value::apply_CONS(Value *)                           { assert(false); }
-Value *Value::apply_CAR()                                   { assert(false); }
+Value *Value::apply_CAR(Env &, Env &)                       { assert(false); }
 Value *Value::apply_CDR()                                   { assert(false); }
 Value *Value::apply_IS_NIL()                                { assert(false); }
 
@@ -32,14 +33,14 @@ void Integer::print(std::ostream &os) const {
 }
 
 /* List */
-Value *List::apply_CONS(Value *head) {
+Value *List::apply_CONS(Value *head) {        
         List *cons = new List;
         cons -> elements = elements;
-        cons -> elements.push_back(head);
+        cons -> elements.push_back(new Literal(head));
         return cons;
 }
-Value *List::apply_CAR() {        
-        return elements.back();
+Value *List::apply_CAR(Env &rho, Env &ksi) {
+        return elements.back() -> val_of(rho, ksi);
 }
 Value *List::apply_CDR() {
         List *cdr = new List;
@@ -94,7 +95,7 @@ Value *Fun::Car::apply_self(std::vector<Exp*> &args, Env &rho, Env &ksi) {
         assert(args.size() == 1);
 
         Value *list = args[0] -> val_of(rho, ksi);
-        return list -> apply_CAR();
+        return list -> apply_CAR(rho, ksi);
 }
 
 Value *Fun::Cdr::apply_self(std::vector<Exp*> &args, Env &rho, Env &ksi) {

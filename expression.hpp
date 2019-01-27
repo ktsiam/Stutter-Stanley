@@ -3,6 +3,7 @@
 
 #include "base.hpp"
 
+
 struct Literal : Exp {
         Literal(Value *v);
         Value *value;

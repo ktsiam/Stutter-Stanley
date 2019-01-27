@@ -1,6 +1,11 @@
 #include "expression.hpp"
 #include "value.hpp"
 
+std::ostream &operator<<(std::ostream &os, const Exp &exp) {
+        exp.print(os);
+        return os;
+}
+
 Literal::Literal(Value *v) : value(v) {}
 Value *Literal::val_of(Env&, Env&) { return value; }
 
@@ -9,10 +14,13 @@ Value *Variable::val_of(Env &rho, Env &ksi)
 {
         if (rho.find(name) != rho.end()) return rho[name];
         if (ksi.find(name) != ksi.end()) return ksi[name];
+        std::cerr << "Variable " << name << " not found!\n";
         assert(false && "Variable not found");
 }
 
-FunctionApp::FunctionApp(Exp *_funExp, std::vector<Exp*> _args) : funExp(_funExp), args(_args) {}
+FunctionApp::FunctionApp(Exp *_funExp, std::vector<Exp*> _args) :
+        funExp(_funExp), args(_args) {}
+
 Value *FunctionApp::val_of(Env &rho, Env &ksi)
 {
         Value *fun = funExp -> val_of(rho, ksi);
