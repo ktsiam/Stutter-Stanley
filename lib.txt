@@ -1,17 +1,50 @@
-(val not   (fun (x)   (if x 0 1)));
-(val +     (fun (x y) (- x (- 0 y))));
-(val and   (fun (x y) (if x y 0)));
-(val or    (fun (x y) (if x 1 y)));
-(val =     (fun (x y) (not (- x y))));
-(val *     (fun (x y) (if (= x 0) 0 (+ y (* (- x 1) y)))));
-(val fac   (fun (x)   (if x (* x (fac (- x 1))) 1))));
-(val o     (fun (f g) (fun (x) (f (g x)))));
-(val curry (fun (f)   (fun (x) (fun (y) (f x y)))));
-(val map   (val temp (fun (f xs)(if (nil? xs) nil (cons (f (car xs)) (temp f (cdr xs)))))));
+(val not      (fun (x)    (if x 0 1)));
+(val +        (fun (x y)  (- x (- 0 y))));
+(val and      (fun (x y)  (if x y 0)));
+(val or       (fun (x y)  (if x 1 y)));
+(val =        (fun (x y)  (not (- x y))));
+(val *        (fun (x y)  (if (= x 0) 0 (+ y (* (- x 1) y)))));
+(val fac      (fun (x)    (if x (* x (fac (- x 1))) 1))));
+
+# composes functions : (b -> c * a -> b) -> (a -> c)
+(val o        (fun (f g)  (fun (x) (f (g x)))));
+
+# not fully functional: requires lambda capture
+(val curry    (fun (f)    (fun (x) (fun (y) (f x y)))));
+
+# applies function (a -> b) to each term of the list and return the result
+# e.g. (map car '( '(1) '(2 3) '((+ 1 2)) )) => '(1 2 3)
+(val map
+     (val temp
+          (fun (f xs)
+               (if (nil? xs)
+                   nil
+                   (cons (f (car xs)) (temp f (cdr xs)))))));
+
+# applies function (a * b -> a) to an ('b list) from left to right,
+# starting with accumulator `zero` of type a
+# e.g. (foldl + 0 '(1 2 3 4)) => 0+1+2+3+4 => 10
 (val foldl
      (val temp
           (fun (f zero xs)
                (if (nil? xs)
-               zero (f (car xs)
-               (temp f zero (cdr xs)))))));
+                   zero (f (car xs)
+                   (temp f zero (cdr xs)))))));
+
+# evaluates expressions of list and returns last
+# e.g. (begin '(1 (+ 1 2) (* 2 3))) => 6
+(val begin
+     (fun (xs)
+          (if (nil? xs)
+             0
+             ((val temp
+                 (fun (es e)
+                     (if (nil? es)
+                         e
+                         (temp (cdr es) (car es))))) (cdr xs) (car xs)))));
+
+# allows serial variable bindings for the evaluation of last term
+# e.g. (let '( (val x 3) (val y 4) (+ x y))) => 7
+(val let begin)
+                   
 

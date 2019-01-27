@@ -33,9 +33,6 @@ Value *VarDef::val_of(Env &rho, Env &ksi)
         return ksi[name] = exp -> val_of(rho, ksi);
 }
 
-FunDef::FunDef(Name n, std::vector<Name> _arg_names, Exp *_body) :
-        funName(n), arg_names(_arg_names), body(_body) {}
-
 Value *FunDef::val_of(Env &, Env &ksi)
 {
         return ksi[funName] = new Fun::Custom(arg_names, body);

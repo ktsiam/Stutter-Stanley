@@ -8,19 +8,27 @@ static bool valid_id(const std::string &s) {
         assert(false);
 }
 
-/* PREPROCESSOR ADDS SPACES BETWEEN (, ), abc */
+/* PREPROCESSOR ADDS SPACES BETWEEN PARENTHESES AND REMOVES COMMENTS */
 std::istringstream Token::preprocess(const std::string &inp)
 {
         std::string ready;
+        bool comment = false;
         
         for (char c : inp) {
                 switch(c) {
+                        case '\n': ready.push_back(' ');
+                                comment = false;
+                                break;
+                        case '#' : comment = true;
+                                break;
                         case '(' : case ')' : case '\'' :
+                                if (comment) break;
                                 ready.push_back(' ');
                                 ready.push_back(c);
                                 ready.push_back(' ');
                                 break;
-                        default : ready.push_back(c);
+                         default : if (comment) break;
+                                ready.push_back(c);
                 }
         }
         return std::istringstream(ready);
@@ -149,8 +157,8 @@ Exp *Tok::Lambda::make_exp() {
 Exp *Tok::ListTok::make_exp() {
         std::vector<Exp*> exps;
 
-        for (Token *tok : elements)
-                exps.push_back(tok -> make_exp());
+        for (auto it = elements.rbegin(); it != elements.rend(); ++it)
+                exps.push_back((*it) -> make_exp());
                                                                                       
         return new Literal(new List(exps));
 }
