@@ -45,6 +45,6 @@
 
 # allows serial variable bindings for the evaluation of last term
 # e.g. (let '( (val x 3) (val y 4) (+ x y))) => 7
-(val let begin)
+(val let begin);
                    
 
