@@ -40,9 +40,14 @@ Value *List::apply_CONS(Value *head) {
         return cons;
 }
 Value *List::apply_CAR(Env &rho, Env &ksi) {
+        if (elements.empty())
+                throw std::runtime_error("Cannot apply `car` to empty list");
         return elements.back() -> val_of(rho, ksi);
 }
 Value *List::apply_CDR() {
+        if (elements.empty())
+                throw std::runtime_error("Cannot apply `cdr` to empty list");
+        
         List *cdr = new List;
         cdr -> elements = elements;
         cdr -> elements.pop_back();
@@ -137,7 +142,7 @@ Value *Fun::Is_nil::apply_self(std::vector<Exp*> &args, Env &rho, Env &ksi) {
 }
 
 Value *Fun::Custom::apply_self(std::vector<Exp*> &args, Env &rho, Env &ksi) {
-        if (args.size() == arg_names.size()) {
+        if (args.size() != arg_names.size()) {
                 std::ostringstream os;
                 os << "Function expected "     << arg_names.size()
                    << " argument(s), but got " << args.size() << '!';

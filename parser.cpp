@@ -135,7 +135,8 @@ Tok::ListTok::ListTok(std::istream &is) {
 
 
 Exp *Tok::Unit::make_exp() {
-        if (std::all_of(id.begin(), id.end(), [](char c) { return std::isdigit(c); }))
+        if (std::all_of(id.begin(), id.end(), [](char c) { return std::isdigit(c); })
+            && !id.empty())
                 return new Literal(new Integer(std::stoi(id)));
         return new Variable(id);
 }

@@ -15,6 +15,7 @@ Completed:
           - primitives (if, -, nil?, cons, car, cdr)
           - lists hold expressions -- can be used for delayed evaluation by `car`
           - begin & let library functions based on list evaluation
+          - error messages
           
 In progress:
           - lambda variable capture

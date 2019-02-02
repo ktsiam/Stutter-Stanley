@@ -15,21 +15,21 @@
 # applies function (a -> b) to each term of the list and return the result
 # e.g. (map car '( '(1) '(2 3) '((+ 1 2)) )) => '(1 2 3)
 (val map
-     (val temp
+     (val map-helper
           (fun (f xs)
                (if (nil? xs)
                    nil
-                   (cons (f (car xs)) (temp f (cdr xs)))))));
+                   (cons (f (car xs)) (map-helper f (cdr xs)))))));
 
 # applies function (a * b -> a) to an ('b list) from left to right,
 # starting with accumulator `zero` of type a
 # e.g. (foldl + 0 '(1 2 3 4)) => 0+1+2+3+4 => 10
 (val foldl
-     (val temp
+     (val foldl-helper
           (fun (f zero xs)
                (if (nil? xs)
                    zero (f (car xs)
-                   (temp f zero (cdr xs)))))));
+                   (foldl-helper f zero (cdr xs)))))));
 
 # evaluates expressions of list and returns last
 # e.g. (begin '(1 (+ 1 2) (* 2 3))) => 6

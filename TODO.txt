@@ -1,5 +1,6 @@
 - implement lambda capture
 - throw exception upon error and catch from main
+- print expressions
 
 - fix type system :
    Type-system : disallow ('a ^ 'a list) and ('a ^ 'a -> 'a) binds
